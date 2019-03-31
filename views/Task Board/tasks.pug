@@ -1,0 +1,55 @@
+extends ../layout
+
+block content
+  link(rel='stylesheet', href='/stylesheets/grid.css')
+  link(rel='stylesheet', href='/stylesheets/task.css')
+  
+  //- h2=documents
+  
+  img.logo.floating#arrow(src="/images/backarrow.png", alt="logo")
+  .all-tasks
+    .col.span-1-of-3.box
+      h1 New
+      ul.items-container#new
+    .col.span-1-of-3.box
+      h1 Progress
+      ul.items-container#progress
+    .col.span-1-of-3.box
+      h1 Review 
+      ul.items-container#review
+  script
+    include tasks.js
+  script. 
+    name="#{name}"
+    //- tasklist="#{tasklist}"
+
+  script(type='text/javascript').
+    console.log(name + "!!!!!!!!!!!!!!!!!!!!!!!")
+    $.getJSON('/tasks/' + name, function(result){ 
+      //- console.log("demkmmfk")
+      let arrayLength = result.tasks.length;
+      for (var i = 0; i < arrayLength-1; i++) {
+          console.log(result.tasks[i].progress);
+          if(result.tasks[i].progress === "new"){
+            $('#new').append($('<li>').text(result.tasks[i].money + "\n" + result.tasks[i].honey + "\n"+ result.tasks[i].text));
+          }else if(result.tasks[i].progress === "progress"){
+            $('#progress').append($('<li>').text(result.tasks[i].money + "\n" + result.tasks[i].honey + "\n"+ result.tasks[i].text));
+          }else{
+           $('#progress').append($('<li>').text(result.tasks[i].money + "\n" + result.tasks[i].honey + "\n"+ result.tasks[i].text)); 
+          }
+          //-   $('#progress').append($('<li>').text(money + "\n" + honey + "\n"+ text));
+          //- }else(result.tasks[i].progress === "review"){
+          //-   $('#progress').append($('<li>').text(money + "\n" + honey + "\n"+ text));
+          //- }
+          //Do something
+      }
+      
+    })
+    
+      
+      
+  
+
+
+  //- h1= title
+  //- p Welcome to #{title}

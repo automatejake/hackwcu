@@ -1,0 +1,118 @@
+extends ../layout
+
+block content
+    #mapid
+    
+    form(method='POST' action='/tasks')
+        div.form-group.input-box.disappear
+        input#dissapear.form-control(type='text' name='id')
+        button.menu.task-btn Task Board
+
+    #assigntask
+      div
+        a.close(href="#") Close
+        h1#taskheader Create Task
+        form(method='POST' action='/sendTask')
+            div.form-group.input-box
+                label(for='honey') Honey: 
+                input#honey.form-control(type='number', placeholder='0' name='honey')
+            div.form-group.input-box
+                label(for='money') Price: 
+                input#money.form-control(type='number', placeholder='0' name='money')
+            div.form-group.description
+                label(for='desc') 
+                textarea#pw.form-control(type='text' name='text' placeholder='Description:')
+            div.form-group.input-box.disappear
+                label(for='id') 
+                input#dissapearing.form-control(type='text' name='id')
+            div.btn-holder
+                button.btn.btn-primary(type='submit') Send Task
+    script
+      include map.js
+    script. 
+      name="#{name}";
+      introHidden="#{introHidden}";
+    
+    #intro
+      .intro
+        img.trophy(src="/images/trophy.png", alt="trophy")
+        h1 Congragulations #{name}, you have begun your bizy career!
+        h2 Here is #{honey} HONEY to get you started
+        .click-anywhere
+          h2 Click Anywhere to Continue
+
+    link(rel='stylesheet', href='/stylesheets/map.css')
+    script(type='text/javascript').
+            document.getElementById("dissapear").value = name;
+            console.log(introHidden)
+            
+            if(introHidden){
+              document.getElementById("intro").style.display = "block";
+            }
+
+            //this function makes button link
+            var assignTask = function(id){
+              let newTask = document.getElementById('assigntask')
+              newTask.style.display = "block";
+              document.getElementById("dissapearing").value = id
+              //- newTask.innerHTML = "Assign Task to" + name;
+              //- document.getElementById('taskheader').innterHTML = "Assign Task to" + name; 
+              //- window.location.href = '/task/' + a;
+            }
+
+            var mymap = L.map('mapid').setView([39.9496428, -75.59349399999999], 9);
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1Ijoiam5ldWJhdW0iLCJhIjoiY2pwbjdvdWczMDA2NDQ4c2Qzanhhc2htayJ9.MFdI132qcBDubGdMoH9k5g'
+            }).addTo(mymap);
+
+
+            var imageUrl = 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
+            imageBounds = [[40.712216, -74.22655], [40.773941, -74.12544]];
+
+            L.imageOverlay(imageUrl, imageBounds).addTo(mymap);
+
+            $('#menu').click(function(){
+              window.location.href = '/tasks'
+            });
+
+            $('#intro').click(function(){
+              var link = document.getElementById('intro');
+              link.style.display = 'none'; //or
+            });
+            $.getJSON('/users',function(result){ 
+              $.each(result.coords, function(err, userLocation){
+                let circle = L.circle([userLocation[1], userLocation[2]], {
+                  color: 'black',
+                  weight: 20,
+                  fillOpacity: .5,
+                  radius: 100
+                }).addTo(mymap).bindPopup("Loading...").on({'mouseover': function (e) {
+                 
+                $.getJSON('/user/' + userLocation[0], function(userInfo){
+                  let popup = e.target.getPopup();
+                            
+                  let content = "<dl id=\"content\"><dt class='task-name'>" + userInfo.name + "</dt><dt class='task-name'>Location: " + userInfo.location + "</dt><dt class='task-name'>Honey: " + userInfo.honey + "</dt><dt class='align'> <button ion-button onclick=assignTask(\"" + String(userLocation[0])+"\")>Assign Task</button> </dt></dl>"; 
+
+                  popup.setContent(content);
+                  popup.update();
+
+
+                })
+                this.openPopup();  
+
+                },'mouseout':function(e){
+                  //- this.closePopup();
+                }})
+              
+              })
+              
+            });
+
+
+        
+
+    
+              

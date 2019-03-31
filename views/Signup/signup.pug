@@ -1,0 +1,33 @@
+extends ../layout
+
+block content
+  link(rel='stylesheet', href='/stylesheets/signup.css')
+  link(rel='stylesheet', href='/stylesheets/normalize.css')
+  .main.container
+    
+    .row
+      img.logo.floating(src="/images/byzi_logo.png", alt="logo")
+      h1 
+        span.span-text B
+        | izylife
+      .col-md-6.col-md-offset-3
+        // register form
+        form(method='POST' action='/submit')
+          div.form-group
+            label(for='name') Name: <br>
+            input#name.form-control(type='text', placeholder='Enter your full name' name='name')
+          div.form-group
+            label(for='location') Location: <br>
+            input#email.form-control(type='text', placeholder='West Chester, PA' name='location')
+          div.form-group
+            label(for='pw') Password: <br>
+            input#pw.form-control(type='password' name='password')
+          div.form-group
+            label(for='pw2') Confirm Password: <br>
+            input#pw2.form-control(type='password' name='confirmPassword')
+          div.btn-holder
+            button.btn.btn-primary(type='submit') Sign up
+  .img-container
+    .hero-textbox
+      h2 Quotes quotes quotes <br>
+      p Details blah blah
